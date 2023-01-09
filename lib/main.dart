@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: const MyHomePage(title: 'Détection de la plateforme'),
+      home: const MyHomePage(title: 'Buttons'),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -30,80 +28,96 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Platform.isAndroid ? material() : cupertino();
+  String _choixBtn = " Aucun bouton";
+
+  void _quelBouton(String btn) {
+    setState(() {
+      switch (btn) {
+        case 'fab':
+          {
+            _choixBtn = "FloatingActionButton";
+          }
+          break;
+        case 'elev':
+          {
+            _choixBtn = "ElevatedButton";
+          }
+          break;
+        case 'outl':
+          {
+            _choixBtn = "OutlinedButton";
+          }
+          break;
+      }
+    });
   }
 
-  Widget material() {
+  void _fabOnPressed() {
+    _quelBouton('fab');
+  }
+
+  void _elevatedButtonOnpressed() {
+    _quelBouton('elev');
+  }
+
+  void _outlinedButtonOnPressed() {
+    _quelBouton('outl');
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        backgroundColor: Colors.red,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [Text('style Material Design')],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              color: Colors.white,
-            ),
-            label: 'Accueil',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.supervised_user_circle,
-              color: Colors.white,
-            ),
-            label: 'Mon compte',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.assessment,
-              color: Colors.white,
-            ),
-            label: 'Statistiques',
-          ),
-        ],
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
-
-  Widget cupertino() {
-    return CupertinoPageScaffold(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
+            const Text('Le bouton appuyé est :'),
             Text(
-              'style Cupertino',
-              style: TextStyle(fontSize: 20.0, decoration: TextDecoration.none),
+              _choixBtn,
+              style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: ElevatedButton(
+                onPressed: _elevatedButtonOnpressed,
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                ),
+                child: const Text(
+                  'ElevatedButton',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            OutlinedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.green),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)))),
+              onPressed: _outlinedButtonOnPressed,
+              child: const Text(
+                'OutlinedButton',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
             ),
           ],
         ),
       ),
-      navigationBar: CupertinoNavigationBar(
-        leading: const Icon(
-          Icons.arrow_back_ios,
-          color: Colors.white,
-        ),
-        automaticallyImplyLeading: true,
-        middle: Text(
-          widget.title,
-          style: const TextStyle(color: Colors.white),
-        ),
-        trailing: const Icon(
-          Icons.add_shopping_cart,
-          color: Colors.white,
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _fabOnPressed,
+        tooltip: "Increment",
         backgroundColor: Colors.red,
+        child: const Icon(Icons.add),
       ),
     );
   }
