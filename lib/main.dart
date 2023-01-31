@@ -1,9 +1,6 @@
-import 'dart:ffi';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:validators/validators.dart' as validator;
-import 'model.dart';
-import 'result.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +16,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(primarySwatch: Colors.blue),
         debugShowCheckedModeBanner: false,
         home: Scaffold(
+          backgroundColor: Colors.grey[400],
           appBar: AppBar(
             title: const Text('Making contact'),
           ),
@@ -35,107 +33,113 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _fromKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
-    final halfMediaWidth = MediaQuery.of(context).size.width / 2.0;
-
     return Form(
-      key: _fromKey,
-      child: Column(
+      child: ListView(
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
             children: [
-              Container(
-                alignment: Alignment.topCenter,
-                width: halfMediaWidth,
-                child: MyTextFormField(
-                  hintText: 'First Name',
-                  validator: () {},
-                  onSaved: () {},
-                ),
+              const BuildFormContact(
+                labelText: 'Prénom',
+                hintText: 'Prénom',
+                prefixText: '',
+                minLines: 1,
+                maxLines: 1,
               ),
-              Container(
-                alignment: Alignment.topCenter,
-                width: halfMediaWidth,
-                child: MyTextFormField(
-                  hintText: 'Last Name',
-                  validator: () {},
-                  onSaved: () {},
-                ),
+              const BuildFormContact(
+                labelText: 'Prénom',
+                hintText: 'Prénom',
+                prefixText: '',
+                minLines: 1,
+                maxLines: 1,
+              ),
+              const BuildFormContact(
+                labelText: 'E-mail',
+                hintText: 'email@test.com',
+                prefixText: '',
+                minLines: 1,
+                maxLines: 1,
+              ),
+              const BuildFormContact(
+                labelText: 'Téléphone',
+                hintText: 'Téléphone',
+                prefixText: '+33',
+                minLines: 1,
+                maxLines: 1,
+              ),
+              const BuildFormContact(
+                labelText: 'Message',
+                hintText: 'Message',
+                prefixText: '',
+                minLines: 5,
+                maxLines: 10,
+              ),
+              const SizedBox(height: 10.0),
+              ElevatedButton(
+                onPressed: () {},
+                child: const Text('Envoyer'),
               ),
             ],
           ),
-          MyTextFormField(
-            hintText: 'Email',
-            isEmail: true,
-            validator: () {},
-            onSaved: () {},
-          ),
-          MyTextFormField(
-            hintText: 'Password',
-            isPassword: true,
-            validator: () {},
-            onSaved: () {},
-          ),
-          MyTextFormField(
-            hintText: 'Confirm Password',
-            isPassword: true,
-            validator: () {},
-            onSaved: () {},
-          ),
-          OutlinedButton(
-            style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.blueAccent)),
-            onPressed: () {
-              if (_fromKey.currentState!.validate()) {}
-            },
-            child: const Text(
-              'Sign Up',
-              style: TextStyle(color: Colors.white),
-            ),
-          )
         ],
       ),
     );
   }
 }
 
-class MyTextFormField extends StatelessWidget {
+class BuildFormContact extends StatelessWidget {
+  final String labelText;
   final String hintText;
-  final Function() validator;
-  final Function() onSaved;
-  final bool isPassword;
-  final bool isEmail;
-
-  const MyTextFormField({
-    super.key,
+  final String prefixText;
+  final int minLines;
+  final int maxLines;
+  const BuildFormContact({
+    required this.labelText,
     required this.hintText,
-    required this.validator,
-    required this.onSaved,
-    this.isPassword = false,
-    this.isEmail = false,
-  });
+    required this.prefixText,
+    required this.minLines,
+    required this.maxLines,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(10.0),
       child: TextFormField(
         decoration: InputDecoration(
-          hintText: hintText,
-          contentPadding: const EdgeInsets.all(15.0),
           border: InputBorder.none,
+          labelText: labelText,
+          labelStyle: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w700,
+            fontSize: 20.0,
+          ),
+          prefixText: prefixText,
+          hintText: hintText,
+          hintStyle: const TextStyle(
+            color: Colors.black,
+          ),
+          contentPadding: const EdgeInsets.all(15),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          floatingLabelStyle: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w700,
+          ),
           filled: true,
-          fillColor: Colors.grey[200],
+          fillColor: Colors.white,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            borderSide: const BorderSide(
+              color: Colors.grey,
+              width: 2.0,
+            ),
+          ),
+          // focusedBorder: InputBorder.none,
         ),
-        obscureText: isPassword ? true : false,
-        validator: validator(),
-        onSaved: onSaved(),
-        keyboardType: isEmail ? TextInputType.emailAddress : TextInputType.text,
+        minLines: minLines,
+        maxLines: maxLines,
       ),
     );
   }
